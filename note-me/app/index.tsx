@@ -22,7 +22,12 @@ export default function Index() {
   return (
     <>
       <Stack.Navigator>
-        <Stack.Screen name="Notes">
+        <Stack.Screen
+          name="Notes"
+          options={{
+            title: 'Note Me', // Custom title for NotesScreen
+          }}
+        >
           {(props) => <NotesScreen {...props} notes={notes} />}
         </Stack.Screen>
         <Stack.Screen name="NewNote">
