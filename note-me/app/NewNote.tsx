@@ -1,67 +1,65 @@
 import React, { useState } from 'react';
-import { TextInput, StyleSheet, Button, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from './index';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message'; // Importing toast
 
-type NewNoteScreenNavigationProp = StackNavigationProp<RootStackParamList, 'NewNote'>;
-
-interface NewNoteProps {
+interface NewNoteScreenProps {
+  navigation: any;
   onAddNote: (note: { title: string; body: string }) => void;
 }
 
-const NewNote = ({ onAddNote }: NewNoteProps) => {
-  const navigation = useNavigation<NewNoteScreenNavigationProp>();
+const NewNoteScreen = ({ navigation, onAddNote }: NewNoteScreenProps) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
+  // Save note and validate input
   const handleSave = () => {
-    if (!title.trim() || !body.trim()) {
-      // Show error message if empty
-      alert('Please fill in both title and body.');
-      return;
+    if (!title || !body) {
+      // Show toast if title or body is empty
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Title and body cannot be empty!',
+      });
+      return; // Prevent navigation if validation fails
     }
 
-    // Add the new note and navigate back
+    // Add the note and navigate back
     onAddNote({ title, body });
-    navigation.goBack();
+    navigation.goBack(); // Navigate back to the previous screen
   };
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Note Title"
+        placeholder="Title"
         value={title}
         onChangeText={setTitle}
       />
       <TextInput
         style={styles.input}
-        placeholder="Note Body"
+        placeholder="Body"
         value={body}
         onChangeText={setBody}
-        multiline
       />
-      <Button title="Save" onPress={handleSave} />
+      <Button title="Save Note" onPress={handleSave} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
     flex: 1,
-    padding: 16,
     justifyContent: 'center',
-    backgroundColor: 'white',
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    borderRadius: 8,
+    marginBottom: 10,
+    paddingLeft: 10,
   },
 });
 
-export default NewNote;
+export default NewNoteScreen;

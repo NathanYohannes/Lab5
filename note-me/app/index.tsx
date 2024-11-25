@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import NotesScreen from './NotesScreen';
 import NewNoteScreen from './NewNote';
+import Toast from 'react-native-toast-message'; // Importing toast
 
 export type RootStackParamList = {
-  Notes: { notes: { title: string; body: string }[] }; // Explicitly typing notes as part of the route params
+  Notes: { notes: { title: string; body: string }[] };
   NewNote: { onAddNote: (note: { title: string; body: string }) => void };
 };
 
@@ -20,16 +20,18 @@ export default function Index() {
   };
 
   return (
-    
+    <>
       <Stack.Navigator>
-        {/* Passing the notes as part of the route params to NotesScreen */}
         <Stack.Screen name="Notes">
           {(props) => <NotesScreen {...props} notes={notes} />}
         </Stack.Screen>
-        {/* Passing the onAddNote function to NewNoteScreen */}
         <Stack.Screen name="NewNote">
           {(props) => <NewNoteScreen {...props} onAddNote={handleAddNote} />}
         </Stack.Screen>
       </Stack.Navigator>
+
+      {/* Toast component */}
+      <Toast />
+    </>
   );
 }
