@@ -1,34 +1,37 @@
 import React from 'react';
-import { StyleSheet, FlatList, Text, View } from 'react-native';
-import { RootStackParamList } from './index';
-import { RouteProp } from '@react-navigation/native';
-import { FAB } from 'react-native-paper'; // Importing FAB component
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; // For FAB icon
 
 interface NotesScreenProps {
-  notes: { title: string; body: string }[]; // Notes array prop
-  navigation: StackNavigationProp<RootStackParamList, 'Notes'>; // Navigation prop
+  notes: { title: string; body: string }[];
+  navigation: any; // This is to allow navigation to the "NewNote" screen
 }
 
-const NotesScreen = ({ notes, navigation }: NotesScreenProps) => {
+const NotesScreen: React.FC<NotesScreenProps> = ({ notes, navigation }) => {
   return (
     <View style={styles.container}>
-      <FlatList
-        data={notes}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.noteContainer}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text>{item.body}</Text>
-          </View>
-        )}
-      />
-      {/* Floating Action Button */}
-      <FAB
+      {notes.length === 0 ? (
+        <Text style={styles.noNotesText}>No notes here</Text>
+      ) : (
+        <FlatList
+          data={notes}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.noteItem}>
+              <Text style={styles.noteTitle}>{item.title}</Text>
+              <Text style={styles.noteBody}>{item.body}</Text>
+            </View>
+          )}
+        />
+      )}
+
+      {/* Floating Action Button (FAB) */}
+      <TouchableOpacity
         style={styles.fab}
-        icon="plus"
-        onPress={() => navigation.navigate('NewNote', { onAddNote: (note: { title: string; body: string }) => {} })}
-      />
+        onPress={() => navigation.navigate('NewNote')}
+      >
+        <MaterialCommunityIcons name="plus" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -36,24 +39,41 @@ const NotesScreen = ({ notes, navigation }: NotesScreenProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
-  noteContainer: {
+  noNotesText: {
+    fontSize: 18,
+    color: 'gray',
+    textAlign: 'center',
+  },
+  noteItem: {
+    marginBottom: 15,
     padding: 10,
-    marginBottom: 10,
+    borderRadius: 5,
     borderWidth: 1,
-    borderRadius: 8,
+    width: '100%',
   },
-  title: {
+  noteTitle: {
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+  },
+  noteBody: {
+    fontSize: 14,
+    color: 'gray',
   },
   fab: {
     position: 'absolute',
-    right: 16,
-    bottom: 16,
-    backgroundColor: '#6200ee', // Change the background color as needed
+    bottom: 30,
+    right: 20,
+    width: 60,
+    height: 60,
+    backgroundColor: '#2196F3', // You can change the color
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8, // Shadow for Android
   },
 });
 
